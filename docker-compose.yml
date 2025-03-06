@@ -14,7 +14,7 @@ services:
       - mariadb_data:/var/lib/mysql
 
   api:
-    container_name: minha-api
+    container_name: api
     build: ./api_rest/
     restart: always
     ports:
@@ -24,7 +24,6 @@ services:
     env_file:
       - ./api_rest/.env
   consumirapi:
-
     container_name: consumir-api
     build: ./consumirApi/
     restart: always
