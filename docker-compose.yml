@@ -1,0 +1,49 @@
+services:
+  mariadb:
+     image: mariadb:latest
+     container_name: meu-mariadb
+     restart: always
+     environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: escola
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root123
+     ports:
+      - "3306:3306"
+     volumes:
+      - mariadb_data:/var/lib/mysql
+
+  api:
+    container_name: minha-api
+    build: ./api_rest/
+    restart: always
+    ports:
+      - "3004:3004"
+    depends_on:
+      - mariadb
+    env_file:
+      - ./api_rest/.env
+  consumirapi:
+
+    container_name: consumir-api
+    build: ./consumirApi/
+    restart: always
+    volumes:
+      - consumirapi-volume:/var/www/html
+
+  nginx:
+    container_name: nginx
+    build: ./nginx/
+    restart: always
+    ports:
+      - 80:80
+    volumes:
+      - consumirapi-volume:/var/www/html
+    depends_on:
+      - mariadb
+      - api
+      - consumirapi
+
+volumes:
+  mariadb_data:
+  consumirapi-volume: 
